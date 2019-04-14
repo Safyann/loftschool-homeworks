@@ -5,12 +5,16 @@ import './Chat.css';
 class Chat extends React.Component {
   state = { messages: [], messageInput: '' };
 
+  messageList = React.createRef();
+
   changeInputMessage = event => {
     this.setState({ messageInput: event.target.value });
   };
 
   sendMessageOnEnter = event => {
-    if (event.key !== 'Enter' || this.state.messageInput === '') {
+    const { messageInput } = this.state;
+
+    if (event.key !== 'Enter' || messageInput === '') {
       return;
     }
 
@@ -21,26 +25,30 @@ class Chat extends React.Component {
         messageInput: ''
       };
     });
-
-    document.querySelector('.messages').scrollIntoView({
-      block: 'end'
-    });
   };
 
   renderMessage = (msg, i) => <Message key={i} text={msg.text} />;
 
+  componentDidUpdate = () => {
+    this.messageList.current.scrollIntoView({
+      block: 'end'
+    });
+  };
+
   render() {
-    const { messages } = this.state;
+    const { messages, messageInput } = this.state;
 
     return (
       <div className="chat">
         <div className="message-list">
-          <div className="messages">{messages.map(this.renderMessage)}</div>
+          <div className="messages" ref={this.messageList}>
+            {messages.map(this.renderMessage)}
+          </div>
         </div>
 
         <input
           className="input-message"
-          value={this.state.messageInput}
+          value={messageInput}
           onChange={this.changeInputMessage}
           onKeyPress={this.sendMessageOnEnter}
         />
