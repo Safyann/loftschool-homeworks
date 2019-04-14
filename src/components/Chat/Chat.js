@@ -10,15 +10,21 @@ class Chat extends React.Component {
   };
 
   sendMessageOnEnter = event => {
-    if (event.key === 'Enter') {
-      this.setState(({ messages }) => {
-        const newMessages = [...messages, { text: this.state.messageInput }];
-        return {
-          messages: newMessages,
-          messageInput: ''
-        };
-      });
+    if (event.key !== 'Enter' || this.state.messageInput === '') {
+      return;
     }
+
+    this.setState(({ messages }) => {
+      const newMessages = [...messages, { text: this.state.messageInput }];
+      return {
+        messages: newMessages,
+        messageInput: ''
+      };
+    });
+
+    document.querySelector('.messages').scrollIntoView({
+      block: 'end'
+    });
   };
 
   renderMessage = (msg, i) => <Message key={i} text={msg.text} />;
